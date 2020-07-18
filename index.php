@@ -27,10 +27,10 @@
 		<br/>
 		<br/>
 		
-		<table id="main_table" class="table table-hover table-striped">		
+		<table id="main_table" class="table table-hover table-striped">
 			<?php
 				$worldometer_data = file_get_contents('https://www.worldometers.info/coronavirus/');
-				$start_content = explode( '<table id="main_table_countries_today" class="table table-bordered table-hover main_table_countries" style="width:100%;margin-top: 0px !important;">' , $worldometer_data);
+				$start_content = explode( '<table id="main_table_countries_today" class="table table-bordered table-hover main_table_countries" style="width:100%;margin-top: 0px !important;display:none;">' , $worldometer_data);
 				$final_content = explode("</table>" , $start_content[1] );
 				echo $final_content[0];
 			?>
@@ -47,17 +47,17 @@
 				$("#main_table").children("tbody").children("tr").each(function(){					
 					var country = $.trim($(this).children("td:eq(1)").text());
 					var total_cases = parseInt($.trim($(this).children("td:eq(2)").text()).split(",").join(""));
-					var total_tests = parseInt($.trim($(this).children("td:eq(11)").text()).split(",").join(""));
-					var tests_per_million = parseInt($.trim($(this).children("td:eq(12)").text()).split(",").join(""));
-					
-					if(total_cases<total_tests){
+					var total_tests = parseInt($.trim($(this).children("td:eq(12)").text()).split(",").join(""));
+					var tests_per_million = parseInt($.trim($(this).children("td:eq(13)").text()).split(",").join(""));
+										
+					if(total_cases<total_tests){						
 						var country_info = {
 							country:country,
 							total_cases:total_cases,
 							total_tests:total_tests,
 							tests_per_million:tests_per_million,
 							case_ratio:(total_cases/total_tests)*100
-						};
+						};						
 						if(total_cases/total_tests*100!=NaN){
 							total_info.push(country_info);
 						}
@@ -68,7 +68,7 @@
 					return parseFloat(a.case_ratio) - parseFloat(b.case_ratio);
 				});
 				
-				var computed_html = '<table id="main_table" class="table table-hover table-striped"><thead>'+
+				var computed_html = '<table id="main_table_countries_today" class="table table-hover table-striped"><thead>'+
 				'<tr><th>Country</th><th>Total Cases</th><th>Total Tests</th><th>Cases Per 100 Tests</th><th>Tests Per Case</th><th>Tests Per Million Population</th></tr></thead><tbody>';
 				
 				for(var info of total_info){					
@@ -78,15 +78,17 @@
 					
 					//console.log(info['country']+" : "+(100/info['case_ratio']));
 					
-					if(info['total_cases']>30000 && info['tests_per_million']<2000){
+					/*if(info['total_cases']>30000 && info['tests_per_million']<2000){
 						console.log(info['country']+" : "+info['case_ratio']+"\nTests per million : "+info['tests_per_million']);
-					}
+					}*/
 				}				
-				computed_html+="</tbody></table>";				
+				computed_html+="</tbody></table>";
 				$("#statistics_holder").html(computed_html);
 				
 			});
-					
+			
+			//Hq Shiblu
+			
 		</script>		
 	</body>
 </html>
